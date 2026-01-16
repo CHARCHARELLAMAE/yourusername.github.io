@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Sugar Loops</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+body{
+  margin:0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg,#ffd6eb,#e4dcff,#d7f3ff);
+  color:#5a4a6b;
+  font-size:18px;
+}
+header{
+  background:white;
+  padding:16px 20px;
+  display:flex;
+  align-items:center;
+  gap:16px;
+  box-shadow:0 8px 20px rgba(0,0,0,.1);
+}
+.logo-wrap{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.logo-wrap img{
+  height:64px;
+  border-radius:18px;
+}
+.logo-wrap h1{
+  margin:0;
+  font-size:30px;
+  font-weight:900;
+  background:linear-gradient(90deg,#ff7eb6,#8b7bff,#6dd6ff);
+  -webkit-background-clip:text;
+  color:transparent;
+}
+header input{
+  flex:1;
+  max-width:340px;
+  padding:12px 16px;
+  border-radius:999px;
+  border:1px solid #ddd;
+}
+header button{
+  padding:10px 16px;
+  border-radius:999px;
+  border:none;
+  background:#f3f3ff;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.hero{
+  text-align:center;
+  padding:80px 20px;
+}
+.hero h2{
+  font-size:60px;
+  margin-bottom:12px;
+}
+.hero button{
+  padding:14px 28px;
+  border-radius:999px;
+  border:none;
+  background:linear-gradient(90deg,#ff9ecf,#c6b7ff,#aee7ff);
+  color:white;
+  font-weight:800;
+}
+
+section{
+  padding:60px 30px;
+  max-width:1400px;
+  margin:auto;
+}
+section h3{
+  font-size:40px;
+  margin-bottom:30px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:24px;
+}
+.card{
+  background:white;
+  padding:20px;
+  border-radius:30px;
+  box-shadow:0 12px 30px rgba(0,0,0,.12);
+  text-align:center;
+}
+.card button{
+  margin-top:10px;
+  padding:10px 18px;
+  border-radius:999px;
+  border:none;
+  background:#ffd6eb;
+  font-weight:800;
+}
+
+#cart{
+  position:fixed;
+  right:20px;
+  top:120px;
+  background:white;
+  width:280px;
+  padding:20px;
+  border-radius:30px;
+  box-shadow:0 12px 30px rgba(0,0,0,.2);
+  display:none;
+}
+
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.3);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:99;
+}
+.modal-box{
+  background:white;
+  padding:30px;
+  border-radius:30px;
+  width:320px;
+}
+.modal-box input{
+  width:100%;
+  margin-bottom:10px;
+  padding:10px;
+}
+.modal-box button{
+  width:100%;
+  padding:12px;
+  border-radius:999px;
+  border:none;
+  background:linear-gradient(90deg,#ff9ecf,#c6b7ff,#aee7ff);
+  color:white;
+  font-weight:800;
+}
+
+.color-row{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin:10px 0;
+}
+.color-dot{
+  width:26px;
+  height:26px;
+  border-radius:50%;
+  border:2px solid #ddd;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo-wrap">
+    <img src="data:image/png;base64,REPLACE_ME_BASE64_LOGO" alt="Sugar Loops Logo">
+    <h1>Sugar Loops</h1>
+  </div>
+
+  <input id="search" placeholder="Search products…">
+
+  <span id="welcome"></span>
+  <button id="loginBtn" onclick="openLogin()">Log In</button>
+  <button id="signupBtn" onclick="openSignup()">Sign Up</button>
+  <button id="logoutBtn" onclick="logout()" style="display:none;">Log Out</button>
+
+  <button onclick="openCustom()">Customize</button>
+  <button onclick="toggleCart()">Cart</button>
+</header>
+
+<div class="hero">
+  <h2>Twist. Stack. Love.</h2>
+  <button onclick="scrollToShop()">Shop Now</button>
+</div>
+
+<section id="shop">
+  <h3>🧵 Bracelets</h3><div class="grid" id="bracelets"></div>
+  <h3>💍 Rings</h3><div class="grid" id="rings"></div>
+  <h3>📿 Necklaces</h3><div class="grid" id="necklaces"></div>
+  <h3>🎁 Packs</h3><div class="grid" id="packs"></div>
+  <h3>✨ Accessories</h3><div class="grid" id="accessories"></div>
+  <h3>🧰 Supplies</h3><div class="grid" id="supplies"></div>
+</section>
+
+<div id="cart">
+  <h3>Your Cart</h3>
+  <div id="cartItems"></div>
+  <strong id="total">$0.00</strong><br><br>
+  <button onclick="clearCart()">Clear</button>
+</div>
+
+<!-- LOGIN -->
+<div class="modal" id="login">
+  <div class="modal-box">
+    <h3>Log In</h3>
+    <input id="liName" placeholder="Your Name">
+    <button onclick="logIn()">Log In</button>
+  </div>
+</div>
+
+<!-- SIGN UP -->
+<div class="modal" id="signup">
+  <div class="modal-box">
+    <h3>Sign Up</h3>
+    <input id="suFirst" placeholder="First Name">
+    <button onclick="signUp()">Create Account</button>
+  </div>
+</div>
+
+<!-- CUSTOMIZE -->
+<div class="modal" id="custom">
+  <div class="modal-box">
+    <h3>Customize Bracelet</h3>
+    <input type="color" onchange="addColor(this.value)">
+    <div class="color-row" id="colorDots"></div>
+    <button onclick="addCustom()">Add Custom ($5)</button>
+  </div>
+</div>
+
+<script>
+/* PRODUCT DATA */
+const data={
+  bracelets:[["Single Chain Bracelet",1],["Fishtail Bracelet",2],["Rope Bracelet",2],["Triple Bracelet",3],["Double Bracelet",3],["Fishbone Bracelet",2],["No-Middle Bracelet",2],["DNA Bracelet",3],["Quad Tail Bracelet",5],["Clay Bead Bracelet",2],["Beaded Rubber Band Bracelet",2],["Anklet",1],["Choker",2.5]],
+  rings:[["Single Chain Ring",.5],["Fishtail Ring",.5],["Rope Ring",.5],["Triple Ring",.75]],
+  necklaces:[["Single Chain Necklace",3.5],["Fishtail Necklace",4]],
+  packs:[["Bracelet Pack",5],["Bracelet + Lip Gloss Pack",10]],
+  accessories:[["Sticker",.5],["Bookmark",.5],["Charm",.5]],
+  supplies:[["Loom",15]]
+};
+
+const cart=[]; let colors=[];
+
+/* LOAD PRODUCTS */
+function makeCard(n,p){
+  const d=document.createElement("div");
+  d.className="card";
+  d.dataset.name=n.toLowerCase();
+  d.innerHTML=`<h4>${n}</h4><p>$${p}</p><button onclick="add('${n}',${p})">Add to Cart</button>`;
+  return d;
+}
+function load(){
+  for(let c in data){
+    data[c].forEach(p=>document.getElementById(c).appendChild(makeCard(p[0],p[1])));
+  }
+  checkLogin();
+}
+
+/* CART */
+function add(n,p){cart.push(p);cartItems.innerHTML+=`<div>${n} $${p}</div>`;update();}
+function update(){total.textContent="$"+cart.reduce((a,b)=>a+b,0).toFixed(2);}
+function clearCart(){cart.length=0;cartItems.innerHTML="";update();}
+function toggleCart(){const b=document.getElementById("cart");b.style.display=b.style.display==="block"?"none":"block";}
+
+/* LOGIN */
+function signUp(){localStorage.setItem("sugarUser",suFirst.value);close();checkLogin();}
+function logIn(){localStorage.setItem("sugarUser",liName.value);close();checkLogin();}
+function checkLogin(){
+  const u=localStorage.getItem("sugarUser");
+  if(u){welcome.textContent="Hi, "+u+" 💖";loginBtn.style.display=signupBtn.style.display="none";logoutBtn.style.display="inline";}
+}
+function logout(){localStorage.removeItem("sugarUser");location.reload();}
+
+/* MODALS */
+function openLogin(){login.style.display="flex";}
+function openSignup(){signup.style.display="flex";}
+function openCustom(){custom.style.display="flex";}
+function close(){document.querySelectorAll(".modal").forEach(m=>m.style.display="none");}
+
+/* CUSTOM */
+function addColor(c){colors.push(c);const d=document.createElement("div");d.className="color-dot";d.style.background=c;colorDots.appendChild(d);}
+function addCustom(){add("Custom Bracelet ("+colors.length+" colors)",5);colors=[];colorDots.innerHTML="";close();}
+
+/* SEARCH */
+search.oninput=e=>{
+  const q=e.target.value.toLowerCase();
+  document.querySelectorAll(".card").forEach(c=>c.style.display=c.dataset.name.includes(q)?"block":"none");
+};
+
+function scrollToShop(){shop.scrollIntoView({behavior:"smooth"});}
+load();
+</script>
+
+</body>
+</html>
